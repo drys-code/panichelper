@@ -459,7 +459,7 @@ fun HomeScreen(
             Spacer(Modifier.height(8.dp))
             Text(
                 text = if (lastAttack == null) "Пока всё спокойно"
-                       else "Последний приступ: ${formatDate(lastAttack.date)}",
+                else "Последний приступ: ${formatDate(lastAttack.date)}",
                 fontSize = 16.sp, color = Color.Gray
             )
         }
@@ -487,10 +487,25 @@ fun HomeScreen(
 
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SecondaryButton("Записи", Icons.Filled.List, onHistory, Modifier.weight(1f))
-                SecondaryButton("Анализ", Icons.Filled.TrendingUp, onAnalytics, Modifier.weight(1f))
+                SecondaryButton(
+                    text = "Записи",
+                    icon = Icons.Filled.List,
+                    onClick = onHistory,
+                    modifier = Modifier.weight(1f)
+                )
+                SecondaryButton(
+                    text = "Анализ",
+                    icon = Icons.Filled.Assessment,
+                    onClick = onAnalytics,
+                    modifier = Modifier.weight(1f)
+                )
             }
-            SecondaryButton("Настройки", Icons.Filled.Settings, onSettings, Modifier.fillMaxWidth())
+            SecondaryButton(
+                text = "Настройки",
+                icon = Icons.Filled.Settings,
+                onClick = onSettings,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
@@ -594,7 +609,9 @@ fun PanicFlowScreen(
             PanicStage.Assess -> AssessStage(haptics, intensity) {
                 intensity = it; haptics.tick(); stage = PanicStage.Trigger
             }
-            PanicStage.Trigger -> TriggerStage(haptics, selectedTriggers,
+            PanicStage.Trigger -> TriggerStage(
+                haptics = haptics,
+                selected = selectedTriggers,
                 onToggle = { t ->
                     selectedTriggers = if (selectedTriggers.contains(t)) selectedTriggers - t else selectedTriggers + t
                     haptics.tick()
@@ -643,7 +660,11 @@ fun PanicIntro(onStart: () -> Unit) {
             fontSize = 20.sp, color = Color.DarkGray, lineHeight = 28.sp
         )
         Spacer(Modifier.height(48.dp))
-        BigButton("Начать", Color(0xFF1976D2), onStart)
+        BigButton(
+            text = "Начать",
+            color = Color(0xFF1976D2),
+            onClick = onStart
+        )
     }
 }
 
@@ -675,7 +696,11 @@ fun NotifyChoiceScreen(
                 fontSize = 18.sp, color = Color.Gray
             )
             Spacer(Modifier.height(24.dp))
-            BigButton("Продолжить без уведомления", Color(0xFF388E3C), onSkip)
+            BigButton(
+                text = "Продолжить без уведомления",
+                color = Color(0xFF388E3C),
+                onClick = onSkip
+            )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 notifyable.forEach { contact ->
@@ -686,7 +711,7 @@ fun NotifyChoiceScreen(
                             .background(if (isSelected) Color(0xFF1976D2) else Color(0xFFE3F2FD))
                             .clickable {
                                 selected = if (isSelected) selected.filter { it.id != contact.id }
-                                           else selected + contact
+                                else selected + contact
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -707,10 +732,18 @@ fun NotifyChoiceScreen(
             }
             Spacer(Modifier.height(24.dp))
             if (selected.isNotEmpty()) {
-                BigButton("Сообщить выбранным", Color(0xFFD32F2F)) { onNotify(selected) }
+                BigButton(
+                    text = "Сообщить выбранным",
+                    color = Color(0xFFD32F2F),
+                    onClick = { onNotify(selected) }
+                )
                 Spacer(Modifier.height(8.dp))
             }
-            BigButton("Продолжить без уведомления", Color(0xFF388E3C), onSkip)
+            BigButton(
+                text = "Продолжить без уведомления",
+                color = Color(0xFF388E3C),
+                onClick = onSkip
+            )
         }
     }
 }
@@ -760,7 +793,11 @@ fun BreathingStage(haptics: Haptics, onDone: () -> Unit) {
         Text("Осталось циклов: $cyclesLeft", fontSize = 18.sp, color = Color.Gray)
         Spacer(Modifier.height(32.dp))
         if (!running) {
-            BigButton("Готово, дальше", Color(0xFF388E3C), onDone)
+            BigButton(
+                text = "Готово, дальше",
+                color = Color(0xFF388E3C),
+                onClick = onDone
+            )
         } else {
             Text(
                 "Телефон вибрирует в ритме дыхания.\nПросто следуй за кругом.",
@@ -797,11 +834,28 @@ fun GroundingStage(haptics: Haptics, onDone: () -> Unit) {
         Spacer(Modifier.height(48.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             if (step > 0) {
-                Box(Modifier.weight(1f)) { BigButton("Назад", Color(0xFFB0BEC5)) { step-- } }
+                Box(Modifier.weight(1f)) {
+                    BigButton(
+                        text = "Назад",
+                        color = Color(0xFFB0BEC5),
+                        onClick = { step-- }
+                    )
+                }
             }
             Box(Modifier.weight(1f)) {
-                if (step < steps.lastIndex) BigButton("Готово", Color(0xFF388E3C)) { step++ }
-                else BigButton("Дальше", Color(0xFF388E3C), onDone)
+                if (step < steps.lastIndex) {
+                    BigButton(
+                        text = "Готово",
+                        color = Color(0xFF388E3C),
+                        onClick = { step++ }
+                    )
+                } else {
+                    BigButton(
+                        text = "Дальше",
+                        color = Color(0xFF388E3C),
+                        onClick = onDone
+                    )
+                }
             }
         }
     }
@@ -875,7 +929,11 @@ fun TriggerStage(
             }
         }
         Spacer(Modifier.height(24.dp))
-        BigButton("Готово, дальше", Color(0xFF388E3C), onDone)
+        BigButton(
+            text = "Готово, дальше",
+            color = Color(0xFF388E3C),
+            onClick = onDone
+        )
     }
 }
 
@@ -914,10 +972,18 @@ fun FinalNotifyScreen(
         }
         Spacer(Modifier.height(24.dp))
         if (selected.isNotEmpty()) {
-            BigButton("Отправить: «всё хорошо»", Color(0xFF388E3C)) { onNotify(selected) }
+            BigButton(
+                text = "Отправить: «всё хорошо»",
+                color = Color(0xFF388E3C),
+                onClick = { onNotify(selected) }
+            )
             Spacer(Modifier.height(8.dp))
         }
-        BigButton("Пропустить", Color(0xFFB0BEC5), onSkip)
+        BigButton(
+            text = "Пропустить",
+            color = Color(0xFFB0BEC5),
+            onClick = onSkip
+        )
     }
 }
 
@@ -937,15 +1003,28 @@ fun DoneStage(onFinish: () -> Unit) {
             fontSize = 20.sp, color = Color.DarkGray, lineHeight = 28.sp
         )
         Spacer(Modifier.height(48.dp))
-        BigButton("На главную", Color(0xFF388E3C), onFinish)
+        BigButton(
+            text = "На главную",
+            color = Color(0xFF388E3C),
+            onClick = onFinish
+        )
     }
 }
 
 @Composable
-fun BigButton(text: String, color: Color, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun BigButton(
+    text: String,
+    color: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Box(
-        modifier = modifier.fillMaxWidth().height(80.dp).clip(RoundedCornerShape(20.dp))
-            .background(color).clickable { onClick() },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(color)
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(text, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
@@ -969,8 +1048,10 @@ fun HistoryScreen(attacks: List<AttackEntry>, onBack: () -> Unit) {
                 Text("Записей пока нет.\nЭто хорошо.", fontSize = 22.sp, color = Color.Gray)
             }
         } else {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 val total = attacks.size
                 val avgInt = attacks.map { it.intensity }.average()
                 Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))) {
@@ -1026,16 +1107,20 @@ fun AnalyticsScreen(
         }
         Spacer(Modifier.height(16.dp))
 
-        Column(modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
 
             if (attacks.isEmpty()) {
                 Card {
-                    Text("Пока нет данных для анализа.\nКогда будут записи — здесь появятся графики.",
-                        modifier = Modifier.padding(16.dp), fontSize = 18.sp)
+                    Text(
+                        "Пока нет данных для анализа.\nКогда будут записи — здесь появятся графики.",
+                        modifier = Modifier.padding(16.dp),
+                        fontSize = 18.sp
+                    )
                 }
             } else {
-                // Сводка
                 Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))) {
                     Column(Modifier.padding(16.dp)) {
                         Text("Общая статистика", fontWeight = FontWeight.Bold, fontSize = 20.sp)
@@ -1050,27 +1135,29 @@ fun AnalyticsScreen(
                     }
                 }
 
-                // График интенсивности
                 Card {
                     Column(Modifier.padding(16.dp)) {
                         Text("Интенсивность приступов", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         Spacer(Modifier.height(12.dp))
-                        SimpleLineChart(attacks.takeLast(30).reversed().map { it.intensity.toFloat() },
-                            Color(0xFFD32F2F), maxVal = 10f)
+                        SimpleLineChart(
+                            attacks.takeLast(30).reversed().map { it.intensity.toFloat() },
+                            Color(0xFFD32F2F),
+                            maxVal = 10f
+                        )
                     }
                 }
 
-                // График длительности
                 Card {
                     Column(Modifier.padding(16.dp)) {
                         Text("Длительность (мин)", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         Spacer(Modifier.height(12.dp))
-                        SimpleLineChart(attacks.takeLast(30).reversed().map { it.durationMin.toFloat() },
-                            Color(0xFF1976D2))
+                        SimpleLineChart(
+                            attacks.takeLast(30).reversed().map { it.durationMin.toFloat() },
+                            Color(0xFF1976D2)
+                        )
                     }
                 }
 
-                // Топ триггеров
                 Card {
                     Column(Modifier.padding(16.dp)) {
                         Text("Частые триггеры", fontWeight = FontWeight.Bold, fontSize = 18.sp)
@@ -1087,7 +1174,6 @@ fun AnalyticsScreen(
                     }
                 }
 
-                // По дням недели
                 Card {
                     Column(Modifier.padding(16.dp)) {
                         Text("По дням недели", fontWeight = FontWeight.Bold, fontSize = 18.sp)
@@ -1104,20 +1190,25 @@ fun AnalyticsScreen(
                 }
             }
 
-            // Экспорт
             Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF3E0))) {
                 Column(Modifier.padding(16.dp)) {
                     Text("Экспорт для врача", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                     Spacer(Modifier.height(8.dp))
-                    Text("Сохранит весь дневник в текстовый файл. Можно отправить на почту или в мессенджер.",
-                        fontSize = 16.sp)
+                    Text(
+                        "Сохранит весь дневник в текстовый файл. Можно отправить на почту или в мессенджер.",
+                        fontSize = 16.sp
+                    )
                     Spacer(Modifier.height(12.dp))
-                    BigButton("Экспортировать лог", Color(0xFFFF6F00)) {
-                        val file = Notifier.exportLog(context, attacks)
-                        if (file != null) {
-                            Notifier.shareFile(context, file)
+                    BigButton(
+                        text = "Экспортировать лог",
+                        color = Color(0xFFFF6F00),
+                        onClick = {
+                            val file = Notifier.exportLog(context, attacks)
+                            if (file != null) {
+                                Notifier.shareFile(context, file)
+                            }
                         }
-                    }
+                    )
                 }
             }
         }
@@ -1165,8 +1256,11 @@ fun SimpleBarChart(values: List<Float>, labels: List<String>, color: Color) {
             val h = (v / max) * (size.height - padding * 2)
             val left = padding + i * slot + gap / 2
             val top = size.height - padding - h
-            drawRect(color, topLeft = androidx.compose.ui.geometry.Offset(left, top),
-                size = androidx.compose.ui.geometry.Size(barW, h))
+            drawRect(
+                color,
+                topLeft = androidx.compose.ui.geometry.Offset(left, top),
+                size = androidx.compose.ui.geometry.Size(barW, h)
+            )
         }
     }
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -1191,16 +1285,19 @@ fun SettingsScreen(
             Text("Настройки", fontSize = 28.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.height(16.dp))
-        Column(modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
 
-            // Контакты
             Card {
                 Column(Modifier.padding(16.dp)) {
                     Text("Близкие люди", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                     Spacer(Modifier.height(8.dp))
-                    Text("Контакты для уведомлений и быстрого звонка.",
-                        fontSize = 16.sp, color = Color.Gray)
+                    Text(
+                        "Контакты для уведомлений и быстрого звонка.",
+                        fontSize = 16.sp, color = Color.Gray
+                    )
                     Spacer(Modifier.height(12.dp))
                     if (contacts.isEmpty()) {
                         Text("Контакты не добавлены", color = Color.Gray)
@@ -1218,23 +1315,36 @@ fun SettingsScreen(
                         }
                     }
                     Spacer(Modifier.height(12.dp))
-                    BigButton("Управление контактами", Color(0xFF1976D2), onContacts)
+                    BigButton(
+                        text = "Управление контактами",
+                        color = Color(0xFF1976D2),
+                        onClick = onContacts
+                    )
                 }
             }
 
-            // Быстрые звонки
             Card {
                 Column(Modifier.padding(16.dp)) {
                     Text("Экстренные звонки", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                     Spacer(Modifier.height(12.dp))
-                    BigButton("Позвонить 112", Color(0xFFD32F2F)) { dialPhone(context, "112") }
+                    BigButton(
+                        text = "Позвонить 112",
+                        color = Color(0xFFD32F2F),
+                        onClick = { dialPhone(context, "112") }
+                    )
                     Spacer(Modifier.height(8.dp))
-                    BigButton("Позвонить 103", Color(0xFFD32F2F)) { dialPhone(context, "103") }
+                    BigButton(
+                        text = "Позвонить 103",
+                        color = Color(0xFFD32F2F),
+                        onClick = { dialPhone(context, "103") }
+                    )
                     contacts.filter { it.phone.isNotBlank() }.forEach { c ->
                         Spacer(Modifier.height(8.dp))
-                        BigButton("Позвонить: ${c.name}", Color(0xFF1976D2)) {
-                            dialPhone(context, c.phone)
-                        }
+                        BigButton(
+                            text = "Позвонить: ${c.name}",
+                            color = Color(0xFF1976D2),
+                            onClick = { dialPhone(context, c.phone) }
+                        )
                     }
                 }
             }
@@ -1243,8 +1353,10 @@ fun SettingsScreen(
                 Column(Modifier.padding(16.dp)) {
                     Text("О приложении", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                     Spacer(Modifier.height(8.dp))
-                    Text("Не заменяет врача. Данные только на телефоне.",
-                        fontSize = 16.sp, lineHeight = 22.sp)
+                    Text(
+                        "Не заменяет врача. Данные только на телефоне.",
+                        fontSize = 16.sp, lineHeight = 22.sp
+                    )
                 }
             }
         }
@@ -1285,7 +1397,7 @@ fun ContactsScreen(
                 contacts.forEach { c ->
                     ContactCard(
                         contact = c,
-                        onCall = { /* через настройки */ },
+                        onCall = {},
                         onEdit = { editing = c },
                         onDelete = { onDelete(c) }
                     )
@@ -1294,7 +1406,11 @@ fun ContactsScreen(
         }
 
         Spacer(Modifier.height(16.dp))
-        BigButton("Добавить контакт", Color(0xFF1976D2)) { showAdd = true }
+        BigButton(
+            text = "Добавить контакт",
+            color = Color(0xFF1976D2),
+            onClick = { showAdd = true }
+        )
     }
 
     if (showAdd) {
@@ -1312,8 +1428,15 @@ fun ContactsScreen(
             initial = c,
             onDismiss = { editing = null },
             onSave = { name, phone, email, nPanic, nFinish ->
-                onUpdate(c.copy(name = name, phone = phone, email = email,
-                    notifyOnPanic = nPanic, notifyOnFinish = nFinish))
+                onUpdate(
+                    c.copy(
+                        name = name,
+                        phone = phone,
+                        email = email,
+                        notifyOnPanic = nPanic,
+                        notifyOnFinish = nFinish
+                    )
+                )
                 editing = null
             }
         )
@@ -1341,13 +1464,19 @@ fun ContactCard(
             Spacer(Modifier.height(8.dp))
             Row {
                 if (contact.notifyOnPanic) {
-                    AssistChip(onClick = {}, label = { Text("при панике") },
-                        leadingIcon = { Icon(Icons.Filled.Notifications, null, Modifier.size(16.dp)) })
+                    AssistChip(
+                        onClick = {},
+                        label = { Text("при панике") },
+                        leadingIcon = { Icon(Icons.Filled.Notifications, null, Modifier.size(16.dp)) }
+                    )
                     Spacer(Modifier.width(4.dp))
                 }
                 if (contact.notifyOnFinish) {
-                    AssistChip(onClick = {}, label = { Text("в конце") },
-                        leadingIcon = { Icon(Icons.Filled.CheckCircle, null, Modifier.size(16.dp)) })
+                    AssistChip(
+                        onClick = {},
+                        label = { Text("в конце") },
+                        leadingIcon = { Icon(Icons.Filled.CheckCircle, null, Modifier.size(16.dp)) }
+                    )
                 }
             }
             Spacer(Modifier.height(8.dp))
@@ -1380,14 +1509,26 @@ fun ContactDialog(
         title = { Text(if (initial == null) "Новый контакт" else "Изменить контакт") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedTextField(value = name, onValueChange = { name = it },
-                    label = { Text("Имя") }, singleLine = true)
-                OutlinedTextField(value = phone, onValueChange = { phone = it },
-                    label = { Text("Телефон (+7...)") }, singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
-                OutlinedTextField(value = email, onValueChange = { email = it },
-                    label = { Text("Email (необязательно)") }, singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email))
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Имя") },
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = phone,
+                    onValueChange = { phone = it },
+                    label = { Text("Телефон (+7...)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                )
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email (необязательно)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = nPanic, onCheckedChange = { nPanic = it })
                     Text("Уведомлять при панике")
